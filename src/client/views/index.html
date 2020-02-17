@@ -35,13 +35,25 @@
     </section>
     <div id="entry-section">
       <div class="container">
-        <h1 class="title">Most Recent Entries</h1>
+        <h1 class="entries-title">Most Recent Entries</h1>
         <div id="entries"></div>
       </div>
     </div>
     <footer>
       <p>This is a footer</p>
     </footer>
+    <script>
+      // Check that service workers are supported
+      if ( 'serviceWorker' in navigator ) {
+        navigator.serviceWorker.register( '/service-worker.js' )
+          .then( registration => {
+            console.log( "Service worker succesfully registered. The scope is: ",registration.scope );
+          } )
+          .catch( err => {
+            console.log( "Service worker not registerd. Error: ",err );
+          } )
+      }
+    </script>
   </body>
 
 </html>

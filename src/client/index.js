@@ -1,9 +1,11 @@
-import { checkForName } from './js/nameChecker';
-import { handleSubmit } from './js/formHandler';
+import { isValidUrl } from './js/validate';
 import './styles/main.scss';
+import { postData, getData } from './js/api';
 
 const urlInput = document.getElementById('url');
 const submitButton = document.getElementById('submit');
+const entrySection = document.getElementById('entry-section');
+const entriesElement = document.getElementById('entries');
 
 // Event Listener
 submitButton.addEventListener('click', submitUrl);
@@ -11,88 +13,83 @@ submitButton.addEventListener('click', submitUrl);
 // Add Entry
 async function submitUrl(e) {
   e.preventDefault();
-  if (urlInput.value == '') {
-    alert('Please fill in all the fields.');
+  if (!isValidUrl(urlInput.value)) {
+    alert('Please enter a valid URL.');
   } else {
-    const postResult = await postUrlRequest('/api', urlInput.value);
+    const postResult = await postData('/api', urlInput.value);
 
     const getResult = await getData('/get', getData);
 
-    console.log(getResult);
+    displayResults(getResult);
   }
-}
-
-async function postUrlRequest(urlToRequestTo, urlForApi) {
-  // Create a new date instance dynamically with JS
-  let d = new Date();
-  let newDate = d.getTime();
-
-  const data = {
-    url: urlForApi,
-    date: newDate,
-  };
-
-  let result = await fetch(urlToRequestTo, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  let responseData = await result.json();
-
-  return responseData;
-}
-
-async function getData(url) {
-  let result = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  let responseData = await result.json();
-
-  return responseData;
 }
 
 function displayResults(data) {
   const entries = data.entries;
-  const { name, date, feeling, zip, temp } = entries[entries.length - 1];
+  console.log('Entries: ', entries);
 
-  const wrapper = document.createElement('div');
-  const flex = document.createElement('div');
-  const textWrapper = document.createElement('div');
-  const nameElement = document.createElement('em');
-  const dateElement = document.createElement('span');
-  const tempElement = document.createElement('div');
-  const tempIndicator = document.createElement('span');
-  const feelingsElement = document.createElement('p');
+  const entriesOnScreen = document.querySelectorAll('.entry-card');
 
-  wrapper.classList.add('entry-card');
-  flex.classList.add('entry-flex');
-  nameElement.classList.add('entry-name');
-  dateElement.classList.add('entry-date');
-  tempElement.classList.add('entry-temp');
-  tempIndicator.classList.add('entry-temp-indicator');
-  textWrapper.classList.add('entry-feelings');
+  entriesOnScreen.forEach((entry) => {
+    entry.remove();
+  });
 
-  nameElement.innerText = `- ${name}`;
-  dateElement.innerText = date;
-  feelingsElement.innerText = feeling;
-  tempIndicator.innerText = '(F)';
-  tempElement.innerText = `${temp}°`;
-  tempElement.appendChild(tempIndicator);
+  entries.map((entry, index) => {
+    const {
+      polarity,
+      subjectivity,
+      text,
+      polarity_confidence,
+      subjectivity_confidence,
+    } = entry;
+    const wrapper = document.createElement('div');
+    const flex = document.createElement('div');
+    const polarityWrapper = document.createElement('div');
+    const subjectivityWrapper = document.createElement('div');
+    const polarityTitle = document.createElement('span');
+    const subjectivityTitle = document.createElement('span');
+    const polarityNumber = document.createElement('h2');
+    const subjectivityNumber = document.createElement('h2');
+    const polarityText = document.createElement('span');
+    const subjectivityText = document.createElement('span');
+    const textWrapper = document.createElement('div');
 
-  flex.appendChild(tempElement);
-  flex.appendChild(dateElement);
-  textWrapper.appendChild(feelingsElement);
-  textWrapper.appendChild(nameElement);
-  wrapper.appendChild(flex);
-  wrapper.appendChild(textWrapper);
+    wrapper.classList.add('entry-card');
+    flex.classList.add('entry-flex');
+    textWrapper.classList.add('entry-original-text');
+    polarityWrapper.classList.add('entry-number-wrapper');
+    subjectivityWrapper.classList.add('entry-number-wrapper');
+    polarityTitle.classList.add('entry-name');
+    subjectivityTitle.classList.add('entry-name');
+    polarityNumber.classList.add('entry-number');
+    subjectivityNumber.classList.add('entry-number');
+    polarityText.classList.add('entry-text');
+    subjectivityText.classList.add('entry-text');
 
-  entriesElement.appendChild(wrapper);
+    polarityTitle.innerText = 'Polarity';
+    subjectivityTitle.innerText = 'Subjectivity';
+
+    polarityText.innerText = polarity;
+    subjectivityText.innerText = subjectivity;
+    polarityNumber.innerText = polarity_confidence.toFixed(2);
+    subjectivityNumber.innerText = subjectivity_confidence.toFixed(2);
+
+    polarityWrapper.appendChild(polarityTitle);
+    polarityWrapper.appendChild(polarityNumber);
+    polarityWrapper.appendChild(polarityText);
+    subjectivityWrapper.appendChild(subjectivityTitle);
+    subjectivityWrapper.appendChild(subjectivityNumber);
+    subjectivityWrapper.appendChild(subjectivityText);
+
+    flex.appendChild(polarityWrapper);
+    flex.appendChild(subjectivityWrapper);
+
+    textWrapper.innerText = text;
+    wrapper.appendChild(flex);
+    wrapper.appendChild(textWrapper);
+
+    entriesElement.appendChild(wrapper);
+  });
+
   entrySection.style.display = 'block';
 }

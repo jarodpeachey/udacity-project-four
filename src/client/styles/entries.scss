@@ -1,0 +1,50 @@
+#entry-section {
+  padding: 32px 0;
+  display: none;
+}
+
+.entries-title {
+  color: rgb(255, 255, 255);
+  text-shadow: 1px 1px 0 rgb(0, 0, 0);
+  font-size: 32px;
+  margin-top: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.entry-card {
+  background: white;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.entry-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.entry-number-wrapper {
+  margin-right: 16px;
+}
+
+.entry-name {
+  font-size: 16px;
+  margin-bottom: -4px;
+}
+
+.entry-number {
+  font-size: 48px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.entry-text {
+  display: block;
+  font-size: 14px;
+  color: #999;
+  margin-top: -8px;
+}
+
+.entry-original-text {
+  margin-top: 12px;
+}

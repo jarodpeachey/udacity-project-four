@@ -64,6 +64,8 @@ async function makeApiRequest(request, response) {
         date: request.body.date,
       };
 
+      console.log(res);
+
       postNewEntry(newEntry);
       response.send(newEntry);
     },
