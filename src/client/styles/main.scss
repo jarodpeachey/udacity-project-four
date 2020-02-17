@@ -1,6 +1,8 @@
 @import './entries.scss';
 @import './form.scss';
 @import './hero.scss';
+@import './header.scss';
+@import './footer.scss';
 
 html,
 body {
@@ -14,8 +16,8 @@ body {
   box-sizing: border-box;
 }
 
-#app {
-  font-family: 'Raleway';
+#main {
+  padding: 36px 0;
 }
 
 .container {
