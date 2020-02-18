@@ -19,8 +19,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-// Use dist folder
-app.use(express.static('dist'));
+// Use public folder
+app.use(express.static('public'));
 
 // Initialize server
 const port = 3000;
@@ -42,7 +42,7 @@ projectData = {
 
 // Get function
 app.get('/', function(req, res) {
-  res.sendFile('dist/index.html');
+  res.sendFile('public/index.html');
 });
 
 app.get('/get', sendData);
@@ -53,7 +53,6 @@ function sendData(request, response) {
 }
 
 async function makeApiRequest(request, response) {
-  // fetch(process.env.API_ENDPOINT)
   const apiResponse = await api.sentiment(
     {
       url: request.body.url,

@@ -16,9 +16,9 @@ async function submitUrl(e) {
   if (!isValidUrl(urlInput.value)) {
     alert('Please enter a valid URL.');
   } else {
-    const postResult = await postData('/api', urlInput.value);
+    const postResult = await postData('http://localhost:3000/api', urlInput.value);
 
-    const getResult = await getData('/get', getData);
+    const getResult = await getData('http://localhost:3000/get', getData);
 
     displayResults(getResult);
   }
